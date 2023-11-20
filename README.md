@@ -1,3 +1,5 @@
 # Northcoders News API
 
-For instructions, please head over to [L2C NC News](https://l2c.northcoders.com/courses/be/nc-news).
+1- To set up environment variables, create .env files:
+A- create .env.development and copy in the following: PGDATABASE=nc_news;
+B- create .env.test and copy in the following: PGDATABASE=nc_news_test;
