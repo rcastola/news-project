@@ -98,3 +98,25 @@ article_img_url
 Consider what errors could occur with this endpoint, and make sure to test for them.
 
 Remember to add a description of this endpoint to your /api endpoint.*/
+describe("GET /api", () => {
+  test("200: response with 200 status code and returns list of all apis", () => {
+    return request(app)
+      .get("/api")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.endpoints).toMatchObject({
+          "GET /api": {
+            description:
+              "serves up a json representation of all the available endpoints of the api",
+          },
+        });
+        for (key in body.endpoints) {
+          expect(body.endpoints[key]).toMatchObject({
+            description: expect.any(String),
+            queries: expect.any(Array),
+            exampleResponse: expect.any(Object),
+          });
+        }
+      });
+  });
+});
