@@ -8,13 +8,15 @@ const {
 const { getArticleByID } = require("./controllers/articles.controllers");
 const { handleServerErrors } = require("./errors");
 const { getApis } = require("./controllers/apis.controllers");
+const { getArticles } = require("./controllers/allArticles.controller");
 
 const app = express();
 
-app.use(express.json());
+//app.use(express.json());
 app.get("/api", getApis);
 
 app.get("/api/topics", getTopics);
+app.get("/api/articles", getArticles);
 
 app.get("/api/articles/:article_id", getArticleByID);
 
