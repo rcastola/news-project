@@ -79,25 +79,7 @@ describe("GET /api/articles/:article_id", () => {
       });
   });
 });
-/*Description
-Should:
 
-be available on /api/articles/:article_id.
-get an article by its id.
-Responds with:
-
-an article object, which should have the following properties:
-author
-title
-article_id
-body
-topic
-created_at
-votes
-article_img_url
-Consider what errors could occur with this endpoint, and make sure to test for them.
-
-Remember to add a description of this endpoint to your /api endpoint.*/
 describe("GET /api", () => {
   test("200: response with 200 status code and returns list of all apis", () => {
     return request(app)
@@ -128,7 +110,6 @@ describe("GET /api/articles", () => {
       .expect(200)
       .then(({ body }) => {
         expect(body.articles).toHaveLength(13);
-        console.log(body.articles, "body");
         body.articles.forEach((article) => {
           expect(article).toMatchObject({
             article_id: expect.any(Number),

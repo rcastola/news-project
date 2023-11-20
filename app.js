@@ -6,7 +6,6 @@ const {
   handlePsqlErrors,
 } = require("./errors");
 const { getArticleByID } = require("./controllers/articles.controllers");
-const { handleServerErrors } = require("./errors");
 const { getApis } = require("./controllers/apis.controllers");
 const { getArticles } = require("./controllers/allArticles.controller");
 
