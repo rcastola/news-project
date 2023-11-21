@@ -50,14 +50,15 @@ describe("GET /api/articles/:article_id", () => {
       .expect(200)
       .then(({ body }) => {
         expect(body.articles).toMatchObject({
-          article_id: expect.any(Number),
-          title: expect.any(String),
-          topic: expect.any(String),
-          author: expect.any(String),
-          body: expect.any(String),
-          created_at: expect.any(String),
-          votes: expect.any(Number),
-          article_img_url: expect.any(String),
+          article_id: 1,
+          title: "Living in the shadow of a great man",
+          topic: "mitch",
+          author: "butter_bridge",
+          body: "I find this existence challenging",
+          created_at: "2020-07-09T20:11:00.000Z",
+          votes: 100,
+          article_img_url:
+            "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
         });
       });
   });
@@ -109,6 +110,10 @@ describe("GET /api/articles", () => {
       .expect(200)
       .then(({ body }) => {
         expect(body.articles).toHaveLength(13);
+        expect(body.articles).toBeSorted({
+          descending: true,
+          key: "created_at",
+        });
         body.articles.forEach((article) => {
           expect(article).toMatchObject({
             article_id: expect.any(Number),
@@ -118,48 +123,17 @@ describe("GET /api/articles", () => {
             created_at: expect.any(String),
             votes: expect.any(Number),
             article_img_url: expect.any(String),
-            //add comment count,
-            //sort by default of date in descending order
+            comment_count: expect.any(String),
           });
         });
       });
   });
+  test("404: response with default 404 status code when given invalid extra path", () => {
+    return request(app)
+      .get("/api/articles/invalid-extra")
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toEqual("bad request");
+      });
+  });
 });
-/* 
-still working on this
-.then(({ body }) => {
-        expect(body.treasures).toHaveLength(26);
-        body.treasures.forEach((treasure) => {
-          expect(treasure).toMatchObject({
-            treasure_id: expect.any(Number),
-            treasure_name: expect.any(String),
-            colour: expect.any(String),
-            age: expect.any(Number),
-            cost_at_auction: expect.any(Number),
-            shop_id: expect.any(Number),
-          });
-        });
-        expect(body.treasures).toBeSortedBy("treasure_id");
-      });*/
-/*Should:
-
-be available on /api/articles.
-get all articles.
-Responds with:
-
-an articles array of article objects, each of which should have the following properties:
-author
-title
-article_id
-topic
-created_at
-votes
-article_img_url
-comment_count, which is the total count of all the comments with this article_id. You should make use of queries to the database in order to achieve this.
-In addition:
-
-the articles should be sorted by date in descending order.
-there should not be a body property present on any of the article objects.
-Consider what errors could occur with this endpoint, and make sure to test for them.
-
-Remember to add a description of this endpoint to your /api endpoint.*/
