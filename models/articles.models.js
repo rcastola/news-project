@@ -11,8 +11,9 @@ exports.selectArticleByID = (article_id) => {
     .then(({ rows }) => {
       if (!rows.length) {
         return Promise.reject({ status: 404, msg: "not found" });
+      } else {
+        return rows[0];
       }
-      return rows[0];
     });
 };
 exports.selectArticles = () => {
