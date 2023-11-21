@@ -119,47 +119,89 @@ describe("GET /api/articles", () => {
             created_at: expect.any(String),
             votes: expect.any(Number),
             article_img_url: expect.any(String),
-            //add comment count,
-            //sort by default of date in descending order
           });
         });
       });
   });
 });
-/* 
-.then(({ body }) => {
-        expect(body.treasures).toHaveLength(26);
-        body.treasures.forEach((treasure) => {
-          expect(treasure).toMatchObject({
-            treasure_id: expect.any(Number),
-            treasure_name: expect.any(String),
-            colour: expect.any(String),
-            age: expect.any(Number),
-            cost_at_auction: expect.any(Number),
-            shop_id: expect.any(Number),
-          });
+
+describe("POST /api/articles/:article_id/comments", () => {
+  test("201: response with 201 status code, inserts comment given article_id and responds with posted comment", () => {
+    const input = {
+      body: "test body",
+      author: "butter_bridge",
+    };
+    return request(app)
+      .post("/api/articles/1/comments")
+      .send(input)
+      .expect(201)
+      .then(({ body }) => {
+        expect(body.comments).toMatchObject({
+          body: "test body",
+          author: "butter_bridge",
+          comment_id: expect.any(Number),
+          article_id: 1,
+          created_at: expect.any(String),
+          votes: expect.any(Number),
         });
-        expect(body.treasures).toBeSortedBy("treasure_id");
-      });*/
+      });
+  });
+  test("400: response with 400 status code and responds with bad request if missing body or author input", () => {
+    const input = {
+      author: "butter_bridge",
+    };
+    return request(app)
+      .post("/api/articles/1/comments")
+      .send(input)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("bad request");
+      });
+  });
+  test("400: response with 400 status code and responds with bad request if author is not an existing user", () => {
+    const input = {
+      body: "test body",
+      author: "not a user",
+    };
+    return request(app)
+      .post("/api/articles/1/comments")
+      .send(input)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("bad request");
+      });
+  });
+  test("400: response with 400 status code and responds with bad request if article_id does not exist", () => {
+    const input = {
+      body: "test body",
+      author: "butter_bridge",
+    };
+    return request(app)
+      .post("/api/articles/999/comments")
+      .send(input)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("bad request");
+      });
+  });
+});
+
+//erroneous path
+
 /*Should:
 
-be available on /api/articles.
-get all articles.
+be available on /api/articles/:article_id/comments.
+add a comment for an article.
+Request body accepts:
+
+an object with the following properties:
+username
+body
+
 Responds with:
 
-an articles array of article objects, each of which should have the following properties:
-author
-title
-article_id
-topic
-created_at
-votes
-article_img_url
-comment_count, which is the total count of all the comments with this article_id. You should make use of queries to the database in order to achieve this.
-In addition:
-
-the articles should be sorted by date in descending order.
-there should not be a body property present on any of the article objects.
+the posted comment.
 Consider what errors could occur with this endpoint, and make sure to test for them.
 
-Remember to add a description of this endpoint to your /api endpoint.*/
+Remember to add a description of this endpoint to your /api endpoint.
+*/
