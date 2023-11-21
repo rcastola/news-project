@@ -13,7 +13,6 @@ const { getApis } = require("./controllers/apis.controllers");
 
 const app = express();
 
-//app.use(express.json());
 app.get("/api", getApis);
 
 app.get("/api/topics", getTopics);
