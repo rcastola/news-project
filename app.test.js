@@ -110,6 +110,10 @@ describe("GET /api/articles", () => {
       .expect(200)
       .then(({ body }) => {
         expect(body.articles).toHaveLength(13);
+        expect(body.articles).toBeSorted({
+          descending: true,
+          key: "created_at",
+        });
         body.articles.forEach((article) => {
           expect(article).toMatchObject({
             article_id: expect.any(Number),
@@ -119,8 +123,17 @@ describe("GET /api/articles", () => {
             created_at: expect.any(String),
             votes: expect.any(Number),
             article_img_url: expect.any(String),
+            comment_count: expect.any(String),
           });
         });
+      });
+  });
+  test("404: response with default 404 status code when given invalid extra path", () => {
+    return request(app)
+      .get("/api/articles/invalid-extra")
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toEqual("bad request");
       });
   });
 });
