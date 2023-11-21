@@ -8,6 +8,9 @@ const {
 const { getArticleByID } = require("./controllers/articles.controllers");
 const { getApis } = require("./controllers/apis.controllers");
 const { getArticles } = require("./controllers/allArticles.controller");
+const {
+  getCommentsByArticleID,
+} = require("./controllers/comments.controllers");
 
 const app = express();
 
@@ -16,8 +19,8 @@ app.get("/api", getApis);
 
 app.get("/api/topics", getTopics);
 app.get("/api/articles", getArticles);
-
 app.get("/api/articles/:article_id", getArticleByID);
+app.get("/api/articles/:article_id/comments", getCommentsByArticleID);
 
 app.use(handleCustomErrors);
 app.use(handlePsqlErrors);

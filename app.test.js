@@ -119,47 +119,46 @@ describe("GET /api/articles", () => {
             created_at: expect.any(String),
             votes: expect.any(Number),
             article_img_url: expect.any(String),
-            //add comment count,
-            //sort by default of date in descending order
           });
         });
       });
   });
 });
-/* 
-.then(({ body }) => {
-        expect(body.treasures).toHaveLength(26);
-        body.treasures.forEach((treasure) => {
-          expect(treasure).toMatchObject({
-            treasure_id: expect.any(Number),
-            treasure_name: expect.any(String),
-            colour: expect.any(String),
-            age: expect.any(Number),
-            cost_at_auction: expect.any(Number),
-            shop_id: expect.any(Number),
+
+describe("GET /api/articles/:article_id/comments", () => {
+  test("200: response with 200 status code and returns array of all comments for a specified article_id", () => {
+    return request(app)
+      .get("/api/articles/1/comments")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.comments).toHaveLength(11);
+        expect(body.comments).toBeSortedBy("created_at", { descending: true });
+        body.comments.forEach((article) => {
+          expect(article).toMatchObject({
+            comment_id: expect.any(Number),
+            body: expect.any(String),
+            article_id: expect.any(Number),
+            author: expect.any(String),
+            votes: expect.any(Number),
+            created_at: expect.any(String),
           });
         });
-        expect(body.treasures).toBeSortedBy("treasure_id");
-      });*/
-/*Should:
-
-be available on /api/articles.
-get all articles.
-Responds with:
-
-an articles array of article objects, each of which should have the following properties:
-author
-title
-article_id
-topic
-created_at
-votes
-article_img_url
-comment_count, which is the total count of all the comments with this article_id. You should make use of queries to the database in order to achieve this.
-In addition:
-
-the articles should be sorted by date in descending order.
-there should not be a body property present on any of the article objects.
-Consider what errors could occur with this endpoint, and make sure to test for them.
-
-Remember to add a description of this endpoint to your /api endpoint.*/
+      });
+  });
+  test("200: response with 200 status code and returns empty array if article exists but has no comments", () => {
+    return request(app)
+      .get("/api/articles/4/comments")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.comments).toEqual([]);
+      });
+  });
+  test("404: response with 404 status code and returns msg not found if article does not exist", () => {
+    return request(app)
+      .get("/api/articles/999/comments")
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toEqual("not found");
+      });
+  });
+});
