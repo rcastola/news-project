@@ -184,4 +184,17 @@ describe("POST /api/articles/:article_id/comments", () => {
         expect(body.msg).toBe("bad request");
       });
   });
+  test("400: response with 400 status code and responds with bad request if article_id is invalid", () => {
+    const input = {
+      body: "test body",
+      author: "butter_bridge",
+    };
+    return request(app)
+      .post("/api/articles/invalid-article_id/comments")
+      .send(input)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("bad request");
+      });
+  });
 });
