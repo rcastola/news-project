@@ -138,6 +138,52 @@ describe("GET /api/articles", () => {
   });
 });
 
+describe("GET /api/articles/:article_id/comments", () => {
+  test("200: response with 200 status code and returns array of all comments for a specified article_id", () => {
+    return request(app)
+      .get("/api/articles/1/comments")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.comments).toHaveLength(11);
+        expect(body.comments).toBeSortedBy("created_at", { descending: true });
+        body.comments.forEach((article) => {
+          expect(article).toMatchObject({
+            comment_id: expect.any(Number),
+            body: expect.any(String),
+            article_id: expect.any(Number),
+            author: expect.any(String),
+            votes: expect.any(Number),
+            created_at: expect.any(String),
+          });
+        });
+      });
+  });
+  test("200: response with 200 status code and returns empty array if article exists but has no comments", () => {
+    return request(app)
+      .get("/api/articles/4/comments")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.comments).toEqual([]);
+      });
+  });
+  test("404: response with 404 status code and returns msg not found if article does not exist", () => {
+    return request(app)
+      .get("/api/articles/999/comments")
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toEqual("not found");
+      });
+  });
+  test("400: response with 400 status code and returns msg bad request if article_id is invalid", () => {
+    return request(app)
+      .get("/api/articles/invalid-id/comments")
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toEqual("bad request");
+      });
+  });
+});
+
 describe("POST /api/articles/:article_id/comments", () => {
   test("201: response with 201 status code, inserts comment given article_id and responds with posted comment", () => {
     const input = {
@@ -208,53 +254,6 @@ describe("POST /api/articles/:article_id/comments", () => {
       .expect(400)
       .then(({ body }) => {
         expect(body.msg).toBe("bad request");
-      });
-  });
-});
-
-describe("GET /api/articles/:article_id/comments", () => {
-  test("200: response with 200 status code and returns array of all comments for a specified article_id", () => {
-    return request(app)
-      .get("/api/articles/1/comments")
-      .expect(200)
-      .then(({ body }) => {
-        expect(body.comments).toHaveLength(11);
-        expect(body.comments).toBeSortedBy("created_at", { descending: true });
-        body.comments.forEach((article) => {
-          expect(article).toMatchObject({
-            comment_id: expect.any(Number),
-            body: expect.any(String),
-            article_id: expect.any(Number),
-            author: expect.any(String),
-            votes: expect.any(Number),
-            created_at: expect.any(String),
-          });
-        });
-      });
-  });
-  test("200: response with 200 status code and returns empty array if article exists but has no comments", () => {
-    return request(app)
-      .get("/api/articles/4/comments")
-      .expect(200)
-      .then(({ body }) => {
-        expect(body.comments).toEqual([]);
-      });
-  });
-  test("404: response with 404 status code and returns msg not found if article does not exist", () => {
-    return request(app)
-      .get("/api/articles/999/comments")
-      .expect(404)
-      .then(({ body }) => {
-        expect(body.msg).toEqual("not found");
-      });
-  });
-  test("400: response with 400 status code and returns msg bad request if article_id is invalid", () => {
-    return request(app)
-      .get("/api/articles/invalid-id/comments")
-      .expect(400)
-      .then(({ body }) => {
-        console.log(body);
-        expect(body.msg).toEqual("bad request");
       });
   });
 });
