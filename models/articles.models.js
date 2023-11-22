@@ -31,3 +31,22 @@ exports.selectArticles = () => {
       return rows;
     });
 };
+
+exports.updateArticles = (articleVoteChange, article_id) => {
+  return db
+    .query(
+      `UPDATE articles
+      SET votes= votes + $1
+      WHERE article_id= $2
+      RETURNING article_id, title, topic, author, created_at, votes, article_img_url;
+      `,
+      [articleVoteChange, article_id]
+    )
+    .then(({ rows }) => {
+      if (!rows.length) {
+        return Promise.reject({ status: 404, msg: "not found" });
+      } else {
+        return rows[0];
+      }
+    });
+};
