@@ -185,23 +185,3 @@ describe("POST /api/articles/:article_id/comments", () => {
       });
   });
 });
-
-//erroneous path
-
-/*Should:
-
-be available on /api/articles/:article_id/comments.
-add a comment for an article.
-Request body accepts:
-
-an object with the following properties:
-username
-body
-
-Responds with:
-
-the posted comment.
-Consider what errors could occur with this endpoint, and make sure to test for them.
-
-Remember to add a description of this endpoint to your /api endpoint.
-*/
