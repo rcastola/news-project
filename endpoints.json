@@ -26,29 +26,30 @@
     }
   },
   "GET /api/articles": {
-    "description": "serves an array of all articles",
+    "description": "serves an array of all articles in descending order of date",
     "queries": ["author", "topic", "sort_by", "order"],
     "exampleResponse": {
       "articles": [
         {
+          "article_id": 1,
           "title": "Seafood substitutions are increasing",
           "topic": "cooking",
           "author": "weegembump",
-          "body": "Text from the article..",
           "created_at": "2018-05-30T15:59:13.341Z",
           "votes": 0,
+          "article_img_url": "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
           "comment_count": 6
         }
       ]
     }
   },
-  "POST /api/articles/:article_id/comments": {
-    "description": "inserts a new comment given a specified article_id",
+  "GET /api/articles/:article_id/comments": {
+    "description": "serves an array of all comments for a given article_id",
     "queries": [],
     "exampleResponse": {
-      "comments": [
+      "articles": [
         {
-          "comment_id": 20,
+          "comment_id": 1,
           "body": "The beautiful thing about treasure is that it exists. Got to find out what kind of sheets these are; not cotton, not rayon, silky.",
           "votes": 14,
           "author": "butter_bridge",
