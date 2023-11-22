@@ -184,3 +184,78 @@ describe("GET /api/articles/:article_id/comments", () => {
       });
   });
 });
+
+describe("PATCH /api/articles/:article_id", () => {
+  test("200: response with 200 status code, increases the votes key of a specific article and returns updated article ", () => {
+    return request(app)
+      .patch("/api/articles/1")
+      .send({ inc_votes: 5 })
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.article).toMatchObject({
+          article_id: 1,
+          title: expect.any(String),
+          topic: expect.any(String),
+          author: expect.any(String),
+          created_at: expect.any(String),
+          votes: 105,
+          article_img_url: expect.any(String),
+        });
+      });
+  });
+  test("200: response with 200 status code, decreases the votes key of a specific article and returns updated article ", () => {
+    return request(app)
+      .patch("/api/articles/1")
+      .send({ inc_votes: -5 })
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.article).toMatchObject({
+          article_id: 1,
+          title: expect.any(String),
+          topic: expect.any(String),
+          author: expect.any(String),
+          created_at: expect.any(String),
+          votes: 95,
+          article_img_url: expect.any(String),
+        });
+      });
+  });
+  test("404: response with 404 status code and msg not found when given non-existing article_id", () => {
+    return request(app)
+      .patch("/api/articles/999")
+      .send({ inc_votes: 5 })
+      .expect(404)
+      .then(({ body }) => {
+        console.log(body);
+        expect(body.msg).toEqual("not found");
+      });
+  });
+  test("400: response with 404 status code and msg bad request when given invalid article_id", () => {
+    return request(app)
+      .patch("/api/articles/invalid-id")
+      .send({ inc_votes: 5 })
+      .expect(400)
+      .then(({ body }) => {
+        console.log(body);
+        expect(body.msg).toEqual("bad request");
+      });
+  });
+  test("400: response with 400 status code and msg bad request when given empty inc_votes object", () => {
+    return request(app)
+      .patch("/api/articles/1")
+      .send({})
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toEqual("bad request");
+      });
+  });
+  test("400: response with 400 status code and msg bad request when given inc_votes object containing data type that is invalid", () => {
+    return request(app)
+      .patch("/api/articles/1")
+      .send({ inc_votes: "invalid vote change" })
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toEqual("bad request");
+      });
+  });
+});
