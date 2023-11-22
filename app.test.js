@@ -283,12 +283,13 @@ describe("PATCH /api/articles/:article_id", () => {
       .then(({ body }) => {
         expect(body.article).toMatchObject({
           article_id: 1,
-          title: expect.any(String),
-          topic: expect.any(String),
-          author: expect.any(String),
+          title: "Living in the shadow of a great man",
+          topic: "mitch",
+          author: "butter_bridge",
           created_at: expect.any(String),
           votes: 95,
-          article_img_url: expect.any(String),
+          article_img_url:
+            "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
         });
       });
   });
@@ -298,7 +299,6 @@ describe("PATCH /api/articles/:article_id", () => {
       .send({ inc_votes: 5 })
       .expect(404)
       .then(({ body }) => {
-        console.log(body);
         expect(body.msg).toEqual("not found");
       });
   });
@@ -308,7 +308,6 @@ describe("PATCH /api/articles/:article_id", () => {
       .send({ inc_votes: 5 })
       .expect(400)
       .then(({ body }) => {
-        console.log(body);
         expect(body.msg).toEqual("bad request");
       });
   });
@@ -328,6 +327,28 @@ describe("PATCH /api/articles/:article_id", () => {
       .expect(400)
       .then(({ body }) => {
         expect(body.msg).toEqual("bad request");
+      });
+  });
+});
+
+describe("DELETE /api/comments/:comment_id", () => {
+  test("204 - delete correct ride given id in url", () => {
+    return request(app).delete("/api/comments/1").expect(204);
+  });
+  test("404 - responds with 404 status code given non-existing comment_id", () => {
+    return request(app)
+      .delete("/api/comments/99999")
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("not found");
+      });
+  });
+  test("400 - responds with 400 status code given invalid comment_id", () => {
+    return request(app)
+      .delete("/api/comments/invalid-comment_id")
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("bad request");
       });
   });
 });
