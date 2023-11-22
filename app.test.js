@@ -138,6 +138,80 @@ describe("GET /api/articles", () => {
   });
 });
 
+describe("POST /api/articles/:article_id/comments", () => {
+  test("201: response with 201 status code, inserts comment given article_id and responds with posted comment", () => {
+    const input = {
+      body: "test body",
+      author: "butter_bridge",
+    };
+    return request(app)
+      .post("/api/articles/1/comments")
+      .send(input)
+      .expect(201)
+      .then(({ body }) => {
+        expect(body.comments).toMatchObject({
+          body: "test body",
+          author: "butter_bridge",
+          comment_id: expect.any(Number),
+          article_id: 1,
+          created_at: expect.any(String),
+          votes: expect.any(Number),
+        });
+      });
+  });
+  test("400: response with 400 status code and responds with bad request if missing body or author input", () => {
+    const input = {
+      author: "butter_bridge",
+    };
+    return request(app)
+      .post("/api/articles/1/comments")
+      .send(input)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("bad request");
+      });
+  });
+  test("400: response with 400 status code and responds with bad request if author is not an existing user", () => {
+    const input = {
+      body: "test body",
+      author: "not a user",
+    };
+    return request(app)
+      .post("/api/articles/1/comments")
+      .send(input)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("bad request");
+      });
+  });
+  test("400: response with 400 status code and responds with bad request if article_id does not exist", () => {
+    const input = {
+      body: "test body",
+      author: "butter_bridge",
+    };
+    return request(app)
+      .post("/api/articles/999/comments")
+      .send(input)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("bad request");
+      });
+  });
+  test("400: response with 400 status code and responds with bad request if article_id is invalid", () => {
+    const input = {
+      body: "test body",
+      author: "butter_bridge",
+    };
+    return request(app)
+      .post("/api/articles/invalid-article_id/comments")
+      .send(input)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("bad request");
+      });
+  });
+});
+
 describe("GET /api/articles/:article_id/comments", () => {
   test("200: response with 200 status code and returns array of all comments for a specified article_id", () => {
     return request(app)
