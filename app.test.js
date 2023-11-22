@@ -174,4 +174,13 @@ describe("GET /api/articles/:article_id/comments", () => {
         expect(body.msg).toEqual("not found");
       });
   });
+  test("400: response with 400 status code and returns msg bad request if article_id is invalid", () => {
+    return request(app)
+      .get("/api/articles/invalid-id/comments")
+      .expect(400)
+      .then(({ body }) => {
+        console.log(body);
+        expect(body.msg).toEqual("bad request");
+      });
+  });
 });
