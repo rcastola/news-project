@@ -352,3 +352,43 @@ describe("DELETE /api/comments/:comment_id", () => {
       });
   });
 });
+
+describe("GET /api/articles?topic=query", () => {
+  test("200 - returns array of all articles with topic specified in query", () => {
+    return request(app)
+      .get("/api/articles?topic=cats")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.articles).toHaveLength(1);
+        body.articles.forEach((article) => {
+          expect(article).toMatchObject({
+            article_id: 5,
+            title: "UNCOVERED: catspiracy to bring down democracy",
+            topic: "cats",
+            author: "rogersop",
+            created_at: "2020-08-03T13:14:00.000Z",
+            votes: 0,
+            article_img_url:
+              "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
+            comment_count: "2",
+          });
+        });
+      });
+  });
+  test("404 - responds with 404 status code given invalid topic query", () => {
+    return request(app)
+      .get("/api/articles?topic=invalid-topic")
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("not found");
+      });
+  });
+  test("200 - responds with 200 and array of all articles if not topic provided in query", () => {
+    return request(app)
+      .get("/api/articles?topic=")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.articles).toHaveLength(13);
+      });
+  });
+});
