@@ -58,7 +58,6 @@ describe("GET /api/articles/:article_id", () => {
           created_at: "2020-07-09T20:11:00.000Z",
           article_img_url:
             "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
-          comment_count: expect.any(String),
         });
       });
   });
@@ -422,17 +421,7 @@ describe("GET /api/articles/:article_id- add comment count", () => {
       .get("/api/articles/9")
       .expect(200)
       .then(({ body }) => {
-        expect(body.articles).toMatchObject({
-          article_id: 9,
-          title: "They're not exactly dogs, are they?",
-          topic: "mitch",
-          author: "butter_bridge",
-          body: "Well? Think about it.",
-          created_at: expect.any(String),
-          article_img_url:
-            "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
-          comment_count: "2",
-        });
+        expect(body.articles).toHaveProperty("comment_count", "2");
       });
   });
   test("200 - returns array of a specified article with comment count of 0 if no comments on given article", () => {
@@ -440,17 +429,7 @@ describe("GET /api/articles/:article_id- add comment count", () => {
       .get("/api/articles/2")
       .expect(200)
       .then(({ body }) => {
-        expect(body.articles).toMatchObject({
-          article_id: 2,
-          title: "Sony Vaio; or, The Laptop",
-          topic: "mitch",
-          author: "icellusedkars",
-          body: expect.any(String),
-          created_at: expect.any(String),
-          article_img_url:
-            "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
-          comment_count: "0",
-        });
+        expect(body.articles).toHaveProperty("comment_count", "0");
       });
   });
 });
