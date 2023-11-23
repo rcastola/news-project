@@ -415,6 +415,7 @@ describe("GET /api/articles?topic=query", () => {
       });
   });
 });
+
 describe("GET /api/articles/:article_id- add comment count", () => {
   test("200 - returns array of a specified article which also includes a comment count", () => {
     return request(app)
@@ -430,6 +431,66 @@ describe("GET /api/articles/:article_id- add comment count", () => {
       .expect(200)
       .then(({ body }) => {
         expect(body.articles).toHaveProperty("comment_count", "0");
+      });
+  });
+});
+
+describe("GET /api/articles/- sort_by and order features", () => {
+  test("200 - returns array of articles sorted by given valid value in default descending order", () => {
+    return request(app)
+      .get("/api/articles?sort_by=article_id")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.articles).toBeSorted({
+          key: "article_id",
+          descending: true,
+        });
+      });
+  });
+  test("200 - returns array of articles sorted by given valid sort_by value in default descending order", () => {
+    return request(app)
+      .get("/api/articles?sort_by=title")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.articles).toBeSorted({ key: "title", descending: true });
+      });
+  });
+  test("400 - returns status code 400 and msg bad request if sort_by value is invalid", () => {
+    return request(app)
+      .get("/api/articles?sort_by=invalid")
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("bad request");
+      });
+  });
+  test("200 - returns array of articles sorted by valid sort_by value in a given order", () => {
+    return request(app)
+      .get("/api/articles?sort_by=article_id&order=DESC")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.articles).toBeSorted({
+          key: "article_id",
+          descending: true,
+        });
+      });
+  });
+  test("200 - returns array of articles sorted by default sort_by value (created_at) in a given order if no sort_by value given", () => {
+    return request(app)
+      .get("/api/articles?order=ASC")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.articles).toBeSorted({
+          key: "created_at",
+          ascending: true,
+        });
+      });
+  });
+  test("400 - returns status code 400 and msg bad request if order value is invalid", () => {
+    return request(app)
+      .get("/api/articles?order=invalid")
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("bad request");
       });
   });
 });
