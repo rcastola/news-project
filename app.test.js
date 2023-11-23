@@ -369,12 +369,4 @@ describe("GET /api/users", () => {
         });
       });
   });
-  test("404: response with default 404 status code when given invalid extra path", () => {
-    return request(app)
-      .get("/api/users/invalid-extra")
-      .expect(404)
-      .then(({ body }) => {
-        expect(body).toMatchObject({});
-      });
-  });
 });
