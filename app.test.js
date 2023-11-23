@@ -352,7 +352,23 @@ describe("DELETE /api/comments/:comment_id", () => {
       });
   });
 });
-
+describe("GET /api/users", () => {
+  test("200 - returns array of all users", () => {
+    return request(app)
+      .get("/api/users")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.users).toHaveLength(4);
+        body.users.forEach((user) => {
+          expect(user).toMatchObject({
+            username: expect.any(String),
+            name: expect.any(String),
+            avatar_url: expect.any(String),
+          });
+        });
+      });
+  });
+});
 describe("GET /api/articles?topic=query", () => {
   test("200 - returns array of all articles with topic specified in query", () => {
     return request(app)
