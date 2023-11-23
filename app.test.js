@@ -383,12 +383,20 @@ describe("GET /api/articles?topic=query", () => {
         expect(body.msg).toBe("not found");
       });
   });
-  test("200 - responds with 200 and array of all articles if not topic provided in query", () => {
+  test("200 - responds with 200 and array of all articles if no topic provided in query", () => {
     return request(app)
       .get("/api/articles?topic=")
       .expect(200)
       .then(({ body }) => {
         expect(body.articles).toHaveLength(13);
+      });
+  });
+  test("200 - responds with 200 status code  and returns empty array given a topic query that has no articles", () => {
+    return request(app)
+      .get("/api/articles?topic=paper")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.articles).toEqual([]);
       });
   });
 });
