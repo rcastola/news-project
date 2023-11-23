@@ -56,9 +56,9 @@ describe("GET /api/articles/:article_id", () => {
           author: "butter_bridge",
           body: "I find this existence challenging",
           created_at: "2020-07-09T20:11:00.000Z",
-          votes: 100,
           article_img_url:
             "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
+          comment_count: expect.any(String),
         });
       });
   });
@@ -413,6 +413,44 @@ describe("GET /api/articles?topic=query", () => {
       .expect(200)
       .then(({ body }) => {
         expect(body.articles).toEqual([]);
+      });
+  });
+});
+describe("GET /api/articles/:article_id- add comment count", () => {
+  test("200 - returns array of a specified article which also includes a comment count", () => {
+    return request(app)
+      .get("/api/articles/9")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.articles).toMatchObject({
+          article_id: 9,
+          title: "They're not exactly dogs, are they?",
+          topic: "mitch",
+          author: "butter_bridge",
+          body: "Well? Think about it.",
+          created_at: expect.any(String),
+          article_img_url:
+            "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
+          comment_count: "2",
+        });
+      });
+  });
+  test("200 - returns array of a specified article with comment count of 0 if no comments on given article", () => {
+    return request(app)
+      .get("/api/articles/2")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.articles).toMatchObject({
+          article_id: 2,
+          title: "Sony Vaio; or, The Laptop",
+          topic: "mitch",
+          author: "icellusedkars",
+          body: expect.any(String),
+          created_at: expect.any(String),
+          article_img_url:
+            "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
+          comment_count: "0",
+        });
       });
   });
 });
