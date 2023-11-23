@@ -352,3 +352,29 @@ describe("DELETE /api/comments/:comment_id", () => {
       });
   });
 });
+
+describe("GET /api/users", () => {
+  test("200 - returns array of all users", () => {
+    return request(app)
+      .get("/api/users")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.users).toHaveLength(4);
+        body.users.forEach((user) => {
+          expect(user).toMatchObject({
+            username: expect.any(String),
+            name: expect.any(String),
+            avatar_url: expect.any(String),
+          });
+        });
+      });
+  });
+  test("404: response with default 404 status code when given invalid extra path", () => {
+    return request(app)
+      .get("/api/users/invalid-extra")
+      .expect(404)
+      .then(({ body }) => {
+        expect(body).toMatchObject({});
+      });
+  });
+});
