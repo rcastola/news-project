@@ -11,6 +11,8 @@ This project is a backend service for the purpose of hosting news articles with 
 - Amending the votes on an individual article
 - Deleting an individual comment
 
+Deployed at: https://hosting-news.onrender.com/
+
 # Setup
 
 ## Installation
@@ -37,9 +39,3 @@ This project is a backend service for the purpose of hosting news articles with 
 Minimum versions:
 Node v18.17.1
 Postgres v2.6.7
-
-<!-- A link to the hosted version.
-A summary of what the project is.
-Clear instructions of how to clone, install dependencies, seed local database, and run tests.
-Information about how to create the two .env files.
-The minimum versions of Node.js, and Postgres needed to run the project. -->
