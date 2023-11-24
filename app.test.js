@@ -494,3 +494,30 @@ describe("GET /api/articles/- sort_by and order features", () => {
       });
   });
 });
+
+describe("GET /api/users/:username- get a user by username", () => {
+  test("200 - returns a user object given a username", () => {
+    return request(app)
+      .get("/api/users/butter_bridge")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.user).toMatchObject({
+          username: "butter_bridge",
+          name: "jonny",
+          avatar_url:
+            "https://www.healthytherapies.com/wp-content/uploads/2016/06/Lime3.jpg",
+        });
+      });
+  });
+  test("404: response with 404 status code and returns error message if username not found", () => {
+    return request(app)
+      .get("/api/users/non-existing-user")
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("not found");
+      });
+  });
+});
+
+
+// Remember to add a description of this endpoint to your /api endpoint.
