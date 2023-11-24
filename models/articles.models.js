@@ -82,3 +82,28 @@ exports.updateArticles = (articleVoteChange, article_id) => {
       }
     });
 };
+
+exports.insertArticles = (newArticle) => {
+  if (newArticle.article_img_url === undefined) {
+    newArticle.article_img_url = "no img url provided";
+  }
+  return db
+    .query(
+      `INSERT INTO articles (title, topic, author, body, article_img_url)
+    VALUES
+    ($1, $2, $3, $4, $5)
+    RETURNING *;`,
+      [
+        newArticle.title,
+        newArticle.topic,
+        newArticle.author,
+        newArticle.body,
+        newArticle.article_img_url,
+      ]
+    )
+    .then((newArticle) => {
+      newArticle.rows[0].comment_count = 0;
+      //unsure if comment_count key inserted in the correct way here
+      return newArticle.rows[0];
+    });
+};

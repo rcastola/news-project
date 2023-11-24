@@ -138,5 +138,24 @@
         }
       ]
     }
+  },
+  "POST /api/articles": {
+    "description": "inserts a new article",
+    "queries": [],
+    "exampleResponse": {
+      "topics": [
+        {
+          "article_id": 1,
+          "title": "Example",
+          "topic": "mitch",
+          "author": "butter_bridge",
+          "body": "Example",
+          "article_img_url": "no img url provided",
+          "votes": 100,
+          "created_at": 1594329060000,
+          "comment_count": 0
+        }
+      ]
+    }
   }
 }

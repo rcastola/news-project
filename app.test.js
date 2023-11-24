@@ -183,7 +183,7 @@ describe("GET /api/articles/:article_id/comments", () => {
   });
 });
 
-describe("POST /api/articles/:article_id/comments", () => {
+describe("POST /api/articles/:article_id/comments - post a comment on an article", () => {
   test("201: response with 201 status code, inserts comment given article_id and responds with posted comment", () => {
     const input = {
       body: "test body",
@@ -589,3 +589,128 @@ describe("PATCH /api/comments/:comment_id- update the votes on a comment given t
       });
   });
 });
+
+describe("POST /api/articles - post an article", () => {
+  test("201: response with 201 status code, inserts comment given article_id and responds with posted comment", () => {
+    const input = {
+      title: "Example",
+      topic: "mitch",
+      author: "butter_bridge",
+      body: "Example",
+      article_img_url:
+        "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
+    };
+    return request(app)
+      .post("/api/articles")
+      .send(input)
+      .expect(201)
+      .then(({ body }) => {
+        expect(body.article).toMatchObject({
+          article_id: expect.any(Number),
+          title: "Example",
+          topic: "mitch",
+          author: "butter_bridge",
+          body: "Example",
+          article_img_url:
+            "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
+          votes: expect.any(Number),
+          created_at: expect.any(String),
+          comment_count: expect.any(Number),
+        });
+      });
+  });
+  test("201: response with 201 status code, inserts comment given article_id and responds with posted comment and default article_img_url if not provided in input", () => {
+    const input = {
+      title: "Example",
+      topic: "mitch",
+      author: "butter_bridge",
+      body: "Example",
+    };
+    return request(app)
+      .post("/api/articles")
+      .send(input)
+      .expect(201)
+      .then(({ body }) => {
+        expect(body.article).toMatchObject({
+          article_id: expect.any(Number),
+          title: "Example",
+          topic: "mitch",
+          author: "butter_bridge",
+          body: "Example",
+          article_img_url: "no img url provided",
+          votes: expect.any(Number),
+          created_at: expect.any(String),
+          comment_count: expect.any(Number),
+        });
+      });
+  });
+  test("400: response with 400 status code and responds with bad request if missing a required field in input", () => {
+    const input = {
+      title: "Example",
+      topic: "mitch",
+      author: "butter_bridge",
+    };
+    return request(app)
+      .post("/api/articles")
+      .send(input)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("bad request");
+      });
+  });
+  test("400: response with 400 status code and responds with bad request if author is not an existing author", () => {
+    const input = {
+      title: "Example",
+      topic: "mitch",
+      author: "not an existing author",
+      body: "Example",
+    };
+    return request(app)
+      .post("/api/articles")
+      .send(input)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("bad request");
+      });
+  });
+  test("400: response with 400 status code and responds with bad request if topic is not an existing topic", () => {
+    const input = {
+      title: "Example",
+      topic: "not an existing topic",
+      author: "butter_bridge",
+      body: "Example",
+    };
+    return request(app)
+      .post("/api/articles")
+      .send(input)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("bad request");
+      });
+  });
+});
+
+// ADVANCED: POST /api/articles
+// Description
+// Should:
+
+// be available on /api/articles.
+// add a new article.
+// Request body accepts:
+
+// an object with the following properties:
+// author
+// title
+// body
+// topic
+// article_img_url - will default if not provided
+// Responds with:
+
+// the newly added article, with all the above properties, as well as:
+// article_id
+// votes
+// created_at
+// comment_count
+// Consider what errors could occur with this endpoint, and make sure to test for them.
+
+// Remember to add a description of this endpoint to your /api endpoint.
