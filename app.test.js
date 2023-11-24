@@ -256,7 +256,7 @@ describe("POST /api/articles/:article_id/comments", () => {
       });
   });
 });
-describe("PATCH /api/articles/:article_id", () => {
+describe("PATCH /api/articles/:article_id- updates the vote key on an article object given article_id", () => {
   test("200: response with 200 status code, increases the votes key of a specific article and returns updated article ", () => {
     return request(app)
       .patch("/api/articles/1")
@@ -519,5 +519,73 @@ describe("GET /api/users/:username- get a user by username", () => {
   });
 });
 
-
-// Remember to add a description of this endpoint to your /api endpoint.
+describe("PATCH /api/comments/:comment_id- update the votes on a comment given the comment_id", () => {
+  test("200: response with 200 status code, increases the votes key of a specific comment and returns updated comment ", () => {
+    return request(app)
+      .patch("/api/comments/1")
+      .send({ inc_votes: 5 })
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.comment).toMatchObject({
+          comment_id: 1,
+          body: "Oh, I've got compassion running out of my nose, pal! I'm the Sultan of Sentiment!",
+          votes: 21,
+          author: "butter_bridge",
+          article_id: 9,
+          created_at: expect.any(String),
+        });
+      });
+  });
+  test("200: response with 200 status code, decreases the votes key of a specific comment and returns updated comment", () => {
+    return request(app)
+      .patch("/api/comments/1")
+      .send({ inc_votes: -5 })
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.comment).toMatchObject({
+          comment_id: 1,
+          body: "Oh, I've got compassion running out of my nose, pal! I'm the Sultan of Sentiment!",
+          votes: 11,
+          author: "butter_bridge",
+          article_id: 9,
+          created_at: expect.any(String),
+        });
+      });
+  });
+  test("404: response with 404 status code and msg not found when given non-existing comment_id", () => {
+    return request(app)
+      .patch("/api/comments/999")
+      .send({ inc_votes: 5 })
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toEqual("not found");
+      });
+  });
+  test("400: response with 400 status code and msg bad request when given invalid comment_id", () => {
+    return request(app)
+      .patch("/api/comments/invalid-id")
+      .send({ inc_votes: 5 })
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toEqual("bad request");
+      });
+  });
+  test("400: response with 400 status code and msg bad request when given empty inc_votes object", () => {
+    return request(app)
+      .patch("/api/comments/1")
+      .send({})
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toEqual("bad request");
+      });
+  });
+  test("400: response with 400 status code and msg bad request when given inc_votes object containing data type that is invalid", () => {
+    return request(app)
+      .patch("/api/comments/1")
+      .send({ inc_votes: "invalid vote change" })
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toEqual("bad request");
+      });
+  });
+});
