@@ -26,7 +26,7 @@
   },
   "GET /api/articles": {
     "description": "serves an array of all articles in descending order of date that can be filtered by topic",
-    "queries": ["author", "topic", "sort_by", "order"],
+    "queries": ["author", "topic", "sort_by", "order", "limit", "p"],
     "exampleResponse": {
       "articles": [
         {

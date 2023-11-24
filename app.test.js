@@ -108,7 +108,7 @@ describe("GET /api/articles", () => {
       .get("/api/articles")
       .expect(200)
       .then(({ body }) => {
-        expect(body.articles).toHaveLength(13);
+        expect(body.articles).toHaveLength(10);
         expect(body.articles).toBeSorted({
           descending: true,
           key: "created_at",
@@ -403,7 +403,7 @@ describe("GET /api/articles?topic=query", () => {
       .get("/api/articles?topic=")
       .expect(200)
       .then(({ body }) => {
-        expect(body.articles).toHaveLength(13);
+        expect(body.articles).toHaveLength(10);
       });
   });
   test("200 - responds with 200 status code  and returns empty array given a topic query that has no articles", () => {
@@ -690,27 +690,56 @@ describe("POST /api/articles - post an article", () => {
   });
 });
 
-// ADVANCED: POST /api/articles
-// Description
-// Should:
-
-// be available on /api/articles.
-// add a new article.
-// Request body accepts:
-
-// an object with the following properties:
-// author
-// title
-// body
-// topic
-// article_img_url - will default if not provided
-// Responds with:
-
-// the newly added article, with all the above properties, as well as:
-// article_id
-// votes
-// created_at
-// comment_count
-// Consider what errors could occur with this endpoint, and make sure to test for them.
-
-// Remember to add a description of this endpoint to your /api endpoint.
+describe("GET /api/articles?limit=X&p=X- add pagination feature", () => {
+  test("200 - returns array of articles included within limit provided and on 1st page", () => {
+    return request(app)
+      .get("/api/articles?limit=5&p=1")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.articles).toHaveLength(5);
+        expect(body.total_count).toBe(5);
+      });
+  });
+  test("200 - returns array of articles included within limit provided and on 2nd page", () => {
+    return request(app)
+      .get("/api/articles?limit=5&p=2")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.articles).toHaveLength(5);
+        expect(body.total_count).toBe(5);
+      });
+  });
+  test("200 - returns array of articles included within limit provided and on 3rd page", () => {
+    return request(app)
+      .get("/api/articles?limit=5&p=3")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.articles).toHaveLength(3);
+        expect(body.total_count).toBe(3);
+      });
+  });
+  test("400: response with 400 status code and returns error message if invalid limit value given ", () => {
+    return request(app)
+      .get("/api/articles?limit=invalid&p=3")
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("bad request");
+      });
+  });
+  test("400: response with 400 status code and returns error message if page number given exceeds max page number ", () => {
+    return request(app)
+      .get("/api/articles?limit=5&p=99")
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("bad request");
+      });
+  });
+  test("400: response with 400 status code and returns error message if invalid page number given ", () => {
+    return request(app)
+      .get("/api/articles?limit=5&p=invalid")
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("bad request");
+      });
+  });
+});
