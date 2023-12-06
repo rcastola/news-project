@@ -7,9 +7,10 @@ const {
 
 exports.getCommentsByArticleID = (req, res, next) => {
   const { article_id } = req.params;
+  const { limit, p } = req.query;
   const commentsPromises = [
     selectArticleByID(article_id),
-    selectCommentsByArticleID(article_id),
+    selectCommentsByArticleID(article_id, limit, p),
   ];
   Promise.all(commentsPromises)
     .then((resolvedPromises) => {

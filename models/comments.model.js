@@ -1,6 +1,6 @@
 const db = require("../db/connection");
 
-exports.selectCommentsByArticleID = (article_id) => {
+exports.selectCommentsByArticleID = (article_id, limit, p) => {
   return db
     .query(
       `SELECT *
@@ -10,7 +10,21 @@ exports.selectCommentsByArticleID = (article_id) => {
       [article_id]
     )
     .then(({ rows }) => {
-      return rows;
+      let numStartResults = 0;
+      let numEndResults = 10;
+      const numRegex = /\d/g;
+      const maxNumPages = Math.ceil(rows.length / limit);
+
+      if (limit && !numRegex.test(limit)) {
+        return Promise.reject({ status: 400, msg: "bad request" });
+      } else if (p && (Number(p) > maxNumPages || p.match(numRegex) === null)) {
+        return Promise.reject({ status: 400, msg: "bad request" });
+      } else if (limit && p) {
+        numStartResults = limit * (p - 1);
+        numEndResults = limit * p;
+      }
+      const finalResults = rows.slice(numStartResults, numEndResults);
+      return finalResults;
     });
 };
 

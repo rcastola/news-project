@@ -143,7 +143,7 @@ describe("GET /api/articles/:article_id/comments", () => {
       .get("/api/articles/1/comments")
       .expect(200)
       .then(({ body }) => {
-        expect(body.comments).toHaveLength(11);
+        expect(body.comments).toHaveLength(10);
         expect(body.comments).toBeSortedBy("created_at", { descending: true });
         body.comments.forEach((article) => {
           expect(article).toMatchObject({
@@ -690,7 +690,7 @@ describe("POST /api/articles - post an article", () => {
   });
 });
 
-describe("GET /api/articles?limit=X&p=X- add pagination feature", () => {
+describe("GET /api/articles?limit=X&p=X- add pagination feature for articles", () => {
   test("200 - returns array of articles included within limit provided and on 1st page", () => {
     return request(app)
       .get("/api/articles?limit=5&p=1")
@@ -737,6 +737,98 @@ describe("GET /api/articles?limit=X&p=X- add pagination feature", () => {
   test("400: response with 400 status code and returns error message if invalid page number given ", () => {
     return request(app)
       .get("/api/articles?limit=5&p=invalid")
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("bad request");
+      });
+  });
+});
+
+describe("GET /api/articles/:article_id/comments?limit=X&p=X, add pagination feature for comments", () => {
+  test("200 - returns array of articles included within limit provided and on 1st page", () => {
+    return request(app)
+      .get("/api/articles/1/comments?limit=5&p=1")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.comments).toHaveLength(5);
+      });
+  });
+  test("200 - returns array of articles included within limit provided and on 2nd page", () => {
+    return request(app)
+      .get("/api/articles/1/comments?limit=5&p=2")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.comments).toHaveLength(5);
+      });
+  });
+  test("200 - returns array of articles included within limit provided and on 3rd page", () => {
+    return request(app)
+      .get("/api/articles/1/comments?limit=5&p=3")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.comments).toHaveLength(1);
+      });
+  });
+  test("400: response with 400 status code and returns error message if invalid limit value given ", () => {
+    return request(app)
+      .get("/api/articles/1/comments?limit=invalid&p=3")
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("bad request");
+      });
+  });
+  test("400: response with 400 status code and returns error message if page number given exceeds max page number ", () => {
+    return request(app)
+      .get("/api/articles/1/comments?limit=5&p=99")
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("bad request");
+      });
+  });
+  test("400: response with 400 status code and returns error message if invalid page number given ", () => {
+    return request(app)
+      .get("/api/articles/1/comments?limit=5&p=invalid")
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("bad request");
+      });
+  });
+});
+
+describe("POST /api/topics- post a new topic", () => {
+  test("201: response with 201 status code, inserts new topic and responds with posted topic", () => {
+    const input = {
+      slug: "topic name here",
+      description: "description here",
+    };
+    return request(app)
+      .post("/api/topics")
+      .send(input)
+      .expect(201)
+      .then(({ body }) => {
+        expect(body.topic).toMatchObject({
+          slug: "topic name here",
+          description: "description here",
+        });
+      });
+  });
+  test("400: response with 400 status code and responds with bad request if missing essential input of slug ", () => {
+    const input = {
+      description: "description here",
+    };
+    return request(app)
+      .post("/api/topics")
+      .send(input)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("bad request");
+      });
+  });
+  test("400: response with 400 status code and responds with bad request if input is an empty object", () => {
+    const input = {};
+    return request(app)
+      .post("/api/topics")
+      .send(input)
       .expect(400)
       .then(({ body }) => {
         expect(body.msg).toBe("bad request");

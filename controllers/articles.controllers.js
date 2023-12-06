@@ -20,7 +20,6 @@ exports.getArticles = (req, res, next) => {
   const { topic, sort_by, order, limit, p } = req.query;
   selectArticles(topic, sort_by, order, limit, p)
     .then((articles) => {
-      console.log(articles.length);
       res
         .status(200)
         .send({ articles: articles, total_count: articles.length });
