@@ -331,7 +331,7 @@ describe("PATCH /api/articles/:article_id- updates the vote key on an article ob
 });
 
 describe("DELETE /api/comments/:comment_id", () => {
-  test("204 - delete correct ride given id in url", () => {
+  test("204 - delete correct comment given id in url", () => {
     return request(app).delete("/api/comments/1").expect(204);
   });
   test("404 - responds with 404 status code given non-existing comment_id", () => {
@@ -829,6 +829,28 @@ describe("POST /api/topics- post a new topic", () => {
     return request(app)
       .post("/api/topics")
       .send(input)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("bad request");
+      });
+  });
+});
+describe("DELETE /api/articles/:article_id.", () => {
+  test("204 - delete correct article given id in url", () => {
+    return request(app).delete("/api/articles/1").expect(204);
+  });
+  test("404 - responds with 404 status code given non-existing article_id", () => {
+    return request(app)
+      .delete("/api/articles/99999")
+      .expect(404)
+      .then(({ body }) => {
+        console.log(body, "body");
+        expect(body.msg).toBe("not found");
+      });
+  });
+  test("400 - responds with 400 status code given invalid article_id", () => {
+    return request(app)
+      .delete("/api/articles/invalid-article_id")
       .expect(400)
       .then(({ body }) => {
         expect(body.msg).toBe("bad request");

@@ -93,7 +93,7 @@
     }
   },
   "DELETE /api/comments/:comment_id": {
-    "description": "deleted a comment given the comment_id",
+    "description": "deletes a comment given the comment_id",
     "queries": [],
     "exampleResponse": {}
   },
@@ -169,5 +169,10 @@
         }
       ]
     }
+  },
+  "DELETE /api/articles/:article_id": {
+    "description": "deletes an article given the article_id",
+    "queries": [],
+    "exampleResponse": {}
   }
 }
