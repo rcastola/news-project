@@ -3,7 +3,7 @@ const db = require("../db/connection");
 exports.selectArticleByID = (article_id) => {
   return db
     .query(
-      `SELECT articles.article_id, articles.title, articles.topic, articles.author, articles.body, articles.created_at, articles.article_img_url,
+      `SELECT articles.article_id, articles.title, articles.topic, articles.author, articles.body, articles.created_at, articles.article_img_url, articles.votes,
       COUNT(comments.comment_id) AS comment_count
         FROM articles
         FULL OUTER JOIN comments
