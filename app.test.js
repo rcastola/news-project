@@ -44,7 +44,7 @@ describe("GET /api/topics", () => {
 });
 
 describe("GET /api/articles/:article_id", () => {
-  test.only("200: response with 200 status code and returns article given ID", () => {
+  test("200: response with 200 status code and returns article given ID", () => {
     return request(app)
       .get("/api/articles/1")
       .expect(200)

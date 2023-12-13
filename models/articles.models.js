@@ -21,7 +21,14 @@ exports.selectArticleByID = (article_id) => {
     });
 };
 exports.selectArticles = (topic, sort_by, order = `DESC`, limit, p) => {
-  const validTopics = ["mitch", "cats", "paper"];
+  const validTopics = [
+    "mitch",
+    "cats",
+    "paper",
+    "football",
+    "coding",
+    "cooking",
+  ]; // change
   const validSortBy = [
     "article_id",
     "title",
