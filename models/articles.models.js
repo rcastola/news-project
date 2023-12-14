@@ -36,6 +36,7 @@ exports.selectArticles = (topic, sort_by, order = `DESC`, limit, p) => {
     "author",
     "created_at",
     "votes",
+    "comment_count",
   ];
   let queryValues = [];
   let queryStr = `SELECT articles.article_id, articles.title, articles.topic, articles.author, articles.created_at, articles.votes, articles.article_img_url,
